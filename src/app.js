@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const { NODE_ENV, API_KEY } = require('./config')
+const { NODE_ENV, API_KEY } = require('../config')
 const logger = require('./logger')
 const BookmarksService = require('./bookmarks-service')
 
