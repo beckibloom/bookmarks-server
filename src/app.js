@@ -5,7 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const logger = require('./logger')
-const bookmarkRouter = require('./bookmark/bookmark-router')
+const BookmarksService = require('./bookmarks-service')
 
 const app = express()
 
@@ -18,7 +18,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use(function validateBearerToken(req, res, next) {
-    const apiToken = process.env.API_TOKEN
+    const apiToken = '8fad2c32-a9f5-4ac3-9ff2-33f9d03f411d'
     const authToken = req.get('Authorization')
 
     if (!authToken || authToken.split(' ')[1] !== apiToken) {
@@ -29,7 +29,28 @@ app.use(function validateBearerToken(req, res, next) {
     next()
 })
 
-app.use(bookmarkRouter)
+app.get('/bookmarks', (req,res,next) => {
+    const knexInstance = req.app.get('db')
+    BookmarksService.getAllBookmarks(knexInstance)
+        .then(bookmarks => {
+            res.json(bookmarks)
+        })
+        .catch(next)
+})
+
+app.get('/bookmarks/:bookmark_id', (req,res,next) => {
+    const knexInstance = req.app.get('db')
+    BookmarksService.getById(knexInstance, req.params.bookmark_id)
+        .then(bookmark => {
+            if (!bookmark) {
+                return res.status(404).json({
+                    error: { message: `Bookmark doesn't exist`}
+                })
+            }
+            res.json(bookmark)
+        })
+        .catch(next)
+})
 
 app.use(function errorHandler(error, req, res, next) {
     let response
