@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const { NODE_ENV } = require('./config')
+const { NODE_ENV, API_KEY } = require('./config')
 const logger = require('./logger')
 const BookmarksService = require('./bookmarks-service')
 
@@ -18,7 +18,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use(function validateBearerToken(req, res, next) {
-    const apiToken = '8fad2c32-a9f5-4ac3-9ff2-33f9d03f411d'
+    const apiToken = API_KEY
     const authToken = req.get('Authorization')
 
     if (!authToken || authToken.split(' ')[1] !== apiToken) {
