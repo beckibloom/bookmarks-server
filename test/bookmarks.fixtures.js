@@ -31,6 +31,6 @@ function makeBookmarksArray() {
   ]
 }
 
-module.exports = [
+module.exports = {
   makeBookmarksArray
-]
+}
